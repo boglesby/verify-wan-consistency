@@ -1,0 +1,32 @@
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '2.2.6.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+}
+
+plugins {
+  id 'io.franzbecker.gradle-lombok' version '1.11'
+}
+
+repositories {
+  mavenCentral()
+  maven { url "https://repo.spring.io/snapshot" }
+  maven { url "https://repo.spring.io/milestone" }
+}
+
+dependencies {
+  compile "org.projectlombok:lombok:1.18.10"
+  annotationProcessor "org.projectlombok:lombok:1.18.10"
+  implementation 'org.springframework.boot:spring-boot-dependencies:2.2.6.RELEASE'
+  compile 'org.springframework.geode:spring-geode-starter:1.2.6.RELEASE'
+}
+
+bootRun {
+  if (project.hasProperty('args')) {
+    args project.args.split(',')
+  }
+}
+
+bootJar {
+  mainClassName = 'wan.verification.client.WanVerificationService'
+}

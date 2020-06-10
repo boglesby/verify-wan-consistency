@@ -1,0 +1,16 @@
+set variable --name=APP_RESULT_VIEWER --value=any
+
+start locator --name=locator-ln --port=10331 --locators=localhost[10331] --mcast-port=0 --J=-Dgemfire.remote-locators=localhost[10332] --J=-Dgemfire.distributed-system-id=1 --J=-Dgemfire.jmx-manager-start=true --J=-Dgemfire.jmx-manager-http-port=8081 --J=-Dgemfire.jmx-manager-port=1091
+start server --name=server-ln-1 --locators=localhost[10331] --server-port=0 --statistic-archive-file=cacheserver.gfs --J=-Dgemfire.log-file=cacheserver.log --J=-Dgemfire.conserve-sockets=false
+start server --name=server-ln-2 --locators=localhost[10331] --server-port=0 --statistic-archive-file=cacheserver.gfs --J=-Dgemfire.log-file=cacheserver.log --J=-Dgemfire.conserve-sockets=false
+create gateway-sender --id="ny" --parallel="true" --remote-distributed-system-id="2"
+sleep --time=5
+create region --name=Trade --type=PARTITION_REDUNDANT --gateway-sender-id="ny"
+disconnect
+
+start locator --name=locator-ny --port=10332 --locators=localhost[10332] --mcast-port=0 --J=-Dgemfire.remote-locators=localhost[10331] --J=-Dgemfire.distributed-system-id=2 --J=-Dgemfire.jmx-manager-start=true --J=-Dgemfire.jmx-manager-http-port=8082 --J=-Dgemfire.jmx-manager-port=1092
+start server --name=server-ny-1 --locators=localhost[10332] --server-port=0 --statistic-archive-file=cacheserver.gfs --J=-Dgemfire.log-file=cacheserver.log --J=-Dgemfire.conserve-sockets=false
+start server --name=server-ny-2 --locators=localhost[10332] --server-port=0 --statistic-archive-file=cacheserver.gfs --J=-Dgemfire.log-file=cacheserver.log --J=-Dgemfire.conserve-sockets=false
+create gateway-receiver
+create region --name=Trade --type=PARTITION_REDUNDANT
+disconnect
